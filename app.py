@@ -296,6 +296,17 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
                     kmeans = KMeans(n_clusters=k, init=init_method, max_iter=max_iter, random_state=42, n_init=10)
                     labels = kmeans.fit_predict(X_train_pca)
 
+                    mlflow.log_param("algorithm", "K-means")
+                    mlflow.log_param("k", k)
+                    mlflow.log_param("init_method", init_method)
+                    mlflow.log_param("max_iter", max_iter)    
+
+                    # Log kết quả: Inertia (tổng bình phương khoảng cách)
+                    mlflow.log_metric("inertia", kmeans.inertia_)
+                    # Log mô hình K-means
+                    mlflow.sklearn.log_model(kmeans, "kmeans_model")
+
+
                     # Vẽ biểu đồ phân cụm
                     fig, ax = plt.subplots(figsize=(6, 4))
                     scatter = ax.scatter(X_train_pca[:, 0], X_train_pca[:, 1], c=labels, cmap='tab10', alpha=0.5)
@@ -303,6 +314,10 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
                     legend1 = ax.legend(*scatter.legend_elements(), title="Clusters")
                     ax.add_artist(legend1)
                     st.pyplot(fig)
+
+                    fig.savefig("kmeans_clusters.png")
+                    mlflow.log_artifact("kmeans_clusters.png")
+
                     st.markdown(
                     """
                     ### 📌 Giải thích biểu đồ phân cụm   
@@ -386,6 +401,18 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
                     dbscan = DBSCAN(eps=eps, min_samples=min_samples, metric=metric)
                     labels = dbscan.fit_predict(X_train_pca)
 
+                    mlflow.log_param("algorithm", "DBSCAN")
+                    mlflow.log_param("eps", eps)
+                    mlflow.log_param("min_samples", min_samples)
+                    mlflow.log_param("metric", metric)
+
+                    # Log số lượng cụm tìm được (không tính noise)
+                    num_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+                    mlflow.log_metric("num_clusters", num_clusters)
+
+                    # Log mô hình DBSCAN (Lưu ý: DBSCAN không có model serialization như KMeans)
+                    mlflow.sklearn.log_model(dbscan, "dbscan_model")
+
                     # Vẽ biểu đồ phân cụm
                     fig, ax = plt.subplots(figsize=(6, 4))
                     scatter = ax.scatter(X_train_pca[:, 0], X_train_pca[:, 1], c=labels, cmap='tab10', alpha=0.5)
@@ -393,6 +420,10 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
                     legend1 = ax.legend(*scatter.legend_elements(), title="Clusters")
                     ax.add_artist(legend1)
                     st.pyplot(fig)
+
+                    fig.savefig("dbscan_clusters.png")
+                    mlflow.log_artifact("dbscan_clusters.png")
+                    
                     st.markdown("""
                     ### 📌 Giải thích biểu đồ phân cụm  
                     - **Mỗi chấm trên đồ thị** 🟢🔵🟣:  
@@ -517,7 +548,7 @@ with st.expander("🖼️ Đánh giá hiệu suất mô hình phân cụm", expa
             else:
                 st.warning("⚠️ DBSCAN chỉ tìm thấy 1 cụm hoặc tất cả điểm bị coi là nhiễu. Hãy thử điều chỉnh `eps` và `min_samples`.")
         mlflow.end_run()
-        
+
 with st.expander("🖼️ Đánh giá hiệu suất mô hình phân cụm", expanded=True):
     st.write(f"MLflow Tracking URI: {mlflow.get_tracking_uri()}")
     print("🎯 Kiểm tra trên DagsHub: https://dagshub.com/Dung2204/Minst-mlflow.mlflow")
