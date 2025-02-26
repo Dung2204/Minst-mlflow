@@ -252,10 +252,9 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
         clustering_method = st.selectbox("🔹 Chọn phương pháp phân cụm:", ["K-means", "DBSCAN"])
 
         if clustering_method == "K-means":
-            with mlflow.start_run():
-                k = st.slider("🔸 Số cụm (K-means)", min_value=2, max_value=20, value=10)
-                st.markdown(
-                    """ 
+            k = st.slider("🔸 Số cụm (K-means)", min_value=2, max_value=20, value=10)
+            st.markdown(
+            """ 
                     🔹 **Số cụm (K):**  
                     - Xác định số lượng nhóm mà thuật toán sẽ chia dữ liệu vào.  
                     - Giá trị hợp lý: `2` đến `20`.  
@@ -263,35 +262,36 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
                         - Chọn **quá nhỏ** có thể dẫn đến nhóm không đủ tốt.  
                         - Chọn **quá lớn** có thể làm mất ý nghĩa.  
                     """
-                )
-                st.markdown("&nbsp;" * 3, unsafe_allow_html=True)  # Tạo khoảng trống
+            )
+            st.markdown("&nbsp;" * 3, unsafe_allow_html=True)  # Tạo khoảng trống
 
 
-                init_method = st.selectbox("🔸 Phương pháp khởi tạo", ["k-means++", "random"])
-                st.markdown(
-                    """ 
+            init_method = st.selectbox("🔸 Phương pháp khởi tạo", ["k-means++", "random"])
+            st.markdown(
+            """ 
                     🔹 **Phương pháp khởi tạo (`init` method)**  
                     - `"k-means++"`: Chọn các điểm trung tâm ban đầu thông minh hơn, giúp hội tụ nhanh hơn.  
                     - `"random"`: Chọn ngẫu nhiên các điểm trung tâm, có thể không tối ưu.  
                     - Khuyến nghị: `"k-means++"` (thường tốt hơn).  
-                    """
-                )
-                st.markdown("&nbsp;" * 33, unsafe_allow_html=True)  # Tạo khoảng trống
+            """
+            )
+            st.markdown("&nbsp;" * 33, unsafe_allow_html=True)  # Tạo khoảng trống
 
 
-                max_iter = st.slider("🔸 Số vòng lặp tối đa", min_value=100, max_value=500, value=300, step=50)
-                st.markdown(
-                    """ 
+            max_iter = st.slider("🔸 Số vòng lặp tối đa", min_value=100, max_value=500, value=300, step=50)
+            st.markdown(
+            """ 
                     🔹 **Số vòng lặp tối đa (`max_iter`)**  
                     - Xác định số lần cập nhật trung tâm cụm trước khi thuật toán dừng.  
                     - Giá trị hợp lý: `100` đến `500`.  
                     - Lưu ý:  
                         - Số vòng lặp lớn giúp thuật toán hội tụ tốt hơn.  
                         - Nhưng cũng tăng thời gian tính toán, có thể gây chậm trễ nếu dữ liệu lớn.  
-                    """
-                )
+            """
+            )
 
-                if st.button("🚀 Chạy K-means"):
+            if st.button("🚀 Chạy K-means"):
+                with mlflow.start_run():
                     kmeans = KMeans(n_clusters=k, init=init_method, max_iter=max_iter, random_state=42, n_init=10)
                     labels = kmeans.fit_predict(X_train_pca)
 
@@ -332,40 +332,39 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
 
                     """
                     )
-            mlflow.end_run()
+                mlflow.end_run()
 
         elif clustering_method == "DBSCAN":
-            with mlflow.start_run():
-                eps = st.slider("🔸 Epsilon (DBSCAN)", min_value=0.1, max_value=5.0, value=1.0, step=0.1)
-                st.markdown(
-                    """ 
-                    🔹 **Epsilon (`eps`)**  
+            eps = st.slider("🔸 Epsilon (DBSCAN)", min_value=0.1, max_value=5.0, value=1.0, step=0.1)
+            st.markdown(
+            """ 
+                🔹 **Epsilon (`eps`)**  
                     - Xác định bán kính tối đa để xem một điểm có thuộc cùng cụm hay không.  
                     - Giá trị hợp lý: `0.1` đến `5.0`.  
                     - Lưu ý:  
                         - Nếu `eps` **quá nhỏ**, nhiều cụm nhỏ hoặc không có cụm nào hình thành.  
                         - Nếu `eps` **quá lớn**, có thể gộp quá nhiều điểm vào một cụm, làm mất ý nghĩa phân cụm.  
-                    """
-                )
-                st.markdown("&nbsp;" * 33, unsafe_allow_html=True)  # Tạo khoảng trống
+                """
+            )
+            st.markdown("&nbsp;" * 33, unsafe_allow_html=True)  # Tạo khoảng trống
 
-                #2
-                max_iter = st.slider("🔸 Số vòng lặp tối đa", min_value=100, max_value=500, value=300, step=50)
-                st.markdown(
-                    """ 
+            
+            max_iter = st.slider("🔸 Số vòng lặp tối đa", min_value=100, max_value=500, value=300, step=50)
+            st.markdown(
+            """ 
                     🔹 **Số vòng lặp tối đa (`max_iter`)**  
                     - Xác định số lần cập nhật trung tâm cụm trước khi thuật toán dừng.  
                     - Giá trị hợp lý: `100` đến `500`.  
                     - Lưu ý:  
                         - Số vòng lặp lớn giúp thuật toán hội tụ tốt hơn.  
                         - Nhưng cũng tăng thời gian tính toán, có thể gây chậm trễ nếu dữ liệu lớn.  
-                    """
-                )
-                st.markdown("&nbsp;" * 33, unsafe_allow_html=True)  # Tạo khoảng trống
+            """
+            )
+            st.markdown("&nbsp;" * 33, unsafe_allow_html=True)  # Tạo khoảng trống
 
-                #3
-                min_samples = st.slider("🔸 Min Samples (DBSCAN)", min_value=1, max_value=20, value=5)
-                st.markdown(
+            #3
+            min_samples = st.slider("🔸 Min Samples (DBSCAN)", min_value=1, max_value=20, value=5)
+            st.markdown(
                     """ 
                     🔹 **Min Samples (`min_samples`)**  
                     - Xác định số lượng điểm lân cận tối thiểu để tạo thành một cụm hợp lệ.  
@@ -374,12 +373,12 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
                         - Nếu `min_samples` **quá nhỏ**, có thể tạo ra nhiều cụm nhiễu.  
                         - Nếu `min_samples` **quá lớn**, có thể bỏ sót các cụm nhỏ, gây mất thông tin quan trọng.  
                     """
-                )
-                st.markdown("&nbsp;" * 33, unsafe_allow_html=True)  # Tạo khoảng trống
+            )
+            st.markdown("&nbsp;" * 33, unsafe_allow_html=True)  # Tạo khoảng trống
 
                 #4
-                metric = st.selectbox("🔸 Khoảng cách (Metric)", ["euclidean", "manhattan", "cosine"])
-                st.markdown(
+            metric = st.selectbox("🔸 Khoảng cách (Metric)", ["euclidean", "manhattan", "cosine"])
+            st.markdown(
                     """ 
                     🔹 **Metric (Khoảng cách)**  
                     - Cách đo khoảng cách giữa các điểm dữ liệu trong thuật toán DBSCAN.  
@@ -392,11 +391,12 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
                         - `"manhattan"` phù hợp hơn khi dữ liệu có các trục quan trọng rõ ràng.  
                         - `"cosine"` thích hợp khi làm việc với dữ liệu không liên quan đến khoảng cách tuyệt đối, như văn bản hoặc dữ liệu nhị phân.  
                     """
-                )
+            )
 
 
 
-                if st.button("🚀 Chạy DBSCAN"):
+            if st.button("🚀 Chạy DBSCAN"):
+                with mlflow.start_run():
                     dbscan = DBSCAN(eps=eps, min_samples=min_samples, metric=metric)
                     labels = dbscan.fit_predict(X_train_pca)
 
@@ -441,7 +441,7 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
                     - Các nhãn cụm cho thấy thuật toán DBSCAN đã tìm thấy rất nhiều cụm khác nhau.  
                     - Điều này có thể là do tham số `eps` quá nhỏ, khiến thuật toán coi nhiều điểm dữ liệu riêng lẻ là một cụm riêng biệt.  
                     """)
-            mlflow.end_run()
+                mlflow.end_run()
     else:
         st.error("🚨 Dữ liệu chưa được xử lý! Hãy đảm bảo bạn đã chạy phần tiền xử lý dữ liệu trước khi thực hiện phân cụm.")
 
