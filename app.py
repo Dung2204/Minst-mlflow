@@ -548,9 +548,9 @@ with st.expander("🖼️ Đánh giá hiệu suất mô hình phân cụm", expa
             else:
                 st.warning("⚠️ DBSCAN chỉ tìm thấy 1 cụm hoặc tất cả điểm bị coi là nhiễu. Hãy thử điều chỉnh `eps` và `min_samples`.")
         mlflow.end_run()
-
+st.write(f"MLflow Tracking URI: {mlflow.get_tracking_uri()}")
 with st.expander("🖼️ Đánh giá hiệu suất mô hình phân cụm", expanded=True):
-    st.write(f"MLflow Tracking URI: {mlflow.get_tracking_uri()}")
+    # st.write(f"MLflow Tracking URI: {mlflow.get_tracking_uri()}")
     print("🎯 Kiểm tra trên DagsHub: https://dagshub.com/Dung2204/Minst-mlflow.mlflow")
 
 
