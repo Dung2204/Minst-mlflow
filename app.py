@@ -261,7 +261,7 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
                     - Lưu ý:  
                         - Chọn **quá nhỏ** có thể dẫn đến nhóm không đủ tốt.  
                         - Chọn **quá lớn** có thể làm mất ý nghĩa.  
-                    """
+            """
             )
             st.markdown("&nbsp;" * 3, unsafe_allow_html=True)  # Tạo khoảng trống
 
@@ -329,7 +329,6 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
                         - PCA giúp giảm chiều dữ liệu từ nhiều chiều xuống 2 chiều để trực quan hóa.  
                         - Giá trị trên trục X và Y có thể lên đến khoảng ±30, phản ánh sự phân bố dữ liệu sau khi PCA được áp dụng.  
                     - **Chú thích (legend)** 🏷️: Hiển thị các cụm được tạo ra.  
-
                     """
                     )
                 mlflow.end_run()
@@ -344,7 +343,7 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
                     - Lưu ý:  
                         - Nếu `eps` **quá nhỏ**, nhiều cụm nhỏ hoặc không có cụm nào hình thành.  
                         - Nếu `eps` **quá lớn**, có thể gộp quá nhiều điểm vào một cụm, làm mất ý nghĩa phân cụm.  
-                """
+            """
             )
             st.markdown("&nbsp;" * 33, unsafe_allow_html=True)  # Tạo khoảng trống
 
@@ -365,21 +364,21 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
             #3
             min_samples = st.slider("🔸 Min Samples (DBSCAN)", min_value=1, max_value=20, value=5)
             st.markdown(
-                    """ 
+            """ 
                     🔹 **Min Samples (`min_samples`)**  
                     - Xác định số lượng điểm lân cận tối thiểu để tạo thành một cụm hợp lệ.  
                     - Giá trị hợp lý: `1` đến `20`.  
                     - Lưu ý:  
                         - Nếu `min_samples` **quá nhỏ**, có thể tạo ra nhiều cụm nhiễu.  
                         - Nếu `min_samples` **quá lớn**, có thể bỏ sót các cụm nhỏ, gây mất thông tin quan trọng.  
-                    """
+            """
             )
             st.markdown("&nbsp;" * 33, unsafe_allow_html=True)  # Tạo khoảng trống
 
                 #4
             metric = st.selectbox("🔸 Khoảng cách (Metric)", ["euclidean", "manhattan", "cosine"])
             st.markdown(
-                    """ 
+            """ 
                     🔹 **Metric (Khoảng cách)**  
                     - Cách đo khoảng cách giữa các điểm dữ liệu trong thuật toán DBSCAN.  
                     - Các tùy chọn phổ biến:  
@@ -390,7 +389,7 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
                         - `"euclidean"` thường hoạt động tốt khi dữ liệu đã chuẩn hóa.  
                         - `"manhattan"` phù hợp hơn khi dữ liệu có các trục quan trọng rõ ràng.  
                         - `"cosine"` thích hợp khi làm việc với dữ liệu không liên quan đến khoảng cách tuyệt đối, như văn bản hoặc dữ liệu nhị phân.  
-                    """
+            """
             )
 
 
@@ -423,23 +422,24 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
                     fig.savefig("dbscan_clusters.png")
                     mlflow.log_artifact("dbscan_clusters.png")
                     
-                    st.markdown("""
-                    ### 📌 Giải thích biểu đồ phân cụm  
-                    - **Mỗi chấm trên đồ thị** 🟢🔵🟣:  
-                    - Mỗi chấm trên đồ thị biểu diễn một điểm dữ liệu, được tô màu theo cụm mà thuật toán xác định.  
-                    - Trục X và Y là không gian giảm chiều (có thể bằng PCA hoặc t-SNE).  
-
-                    - **Màu sắc** 🎨:  
-                    - Mỗi màu tượng trưng cho một cụm dữ liệu khác nhau.  
-                    - Vì có quá nhiều màu khác nhau, điều này cho thấy thuật toán đã chia dữ liệu thành quá nhiều cụm.  
-
-                    - **Trục X và Y** 📉:  
-                    - Trục X và Y dao động từ -10 đến khoảng 30, phản ánh sự phân bố dữ liệu.  
-                    - Điều này gợi ý rằng dữ liệu gốc có thể đã được giảm chiều trước khi phân cụm.  
-
-                    - **Chú thích (legend)** 🏷️:  
-                    - Các nhãn cụm cho thấy thuật toán DBSCAN đã tìm thấy rất nhiều cụm khác nhau.  
-                    - Điều này có thể là do tham số `eps` quá nhỏ, khiến thuật toán coi nhiều điểm dữ liệu riêng lẻ là một cụm riêng biệt.  
+                    st.markdown(
+                    """
+                        ### 📌 Giải thích biểu đồ phân cụm  
+                        - **Mỗi chấm trên đồ thị** 🟢🔵🟣:  
+                        - Mỗi chấm trên đồ thị biểu diễn một điểm dữ liệu, được tô màu theo cụm mà thuật toán xác định.  
+                        - Trục X và Y là không gian giảm chiều (có thể bằng PCA hoặc t-SNE).  
+    
+                        - **Màu sắc** 🎨:  
+                        - Mỗi màu tượng trưng cho một cụm dữ liệu khác nhau.  
+                        - Vì có quá nhiều màu khác nhau, điều này cho thấy thuật toán đã chia dữ liệu thành quá nhiều cụm.  
+    
+                        - **Trục X và Y** 📉:  
+                        - Trục X và Y dao động từ -10 đến khoảng 30, phản ánh sự phân bố dữ liệu.  
+                        - Điều này gợi ý rằng dữ liệu gốc có thể đã được giảm chiều trước khi phân cụm.  
+    
+                        - **Chú thích (legend)** 🏷️:  
+                        - Các nhãn cụm cho thấy thuật toán DBSCAN đã tìm thấy rất nhiều cụm khác nhau.  
+                        - Điều này có thể là do tham số `eps` quá nhỏ, khiến thuật toán coi nhiều điểm dữ liệu riêng lẻ là một cụm riêng biệt.  
                     """)
                 mlflow.end_run()
     else:
@@ -481,13 +481,14 @@ with st.expander("🖼️ Đánh giá hiệu suất mô hình phân cụm", expa
         st.pyplot(fig)
 
             # Giải thích về biểu đồ
-        st.markdown("""
-        **📌 Giải thích biểu đồ Silhouette Score**:
-            - **Trục hoành**: Silhouette Score (từ -1 đến 1).
-            - **Trục tung**: Các cụm được phát hiện.
-            - **Dải màu**: Độ rộng biểu thị số lượng điểm trong từng cụm.
-            - **Đường đứt đỏ**: Trung bình Silhouette Score của toàn bộ dữ liệu.
-            - **Nếu giá trị Silhouette Score âm**: có thể một số điểm bị phân cụm sai.
+        st.markdown(
+        """
+            **📌 Giải thích biểu đồ Silhouette Score**:
+                - **Trục hoành**: Silhouette Score (từ -1 đến 1).
+                - **Trục tung**: Các cụm được phát hiện.
+                - **Dải màu**: Độ rộng biểu thị số lượng điểm trong từng cụm.
+                - **Đường đứt đỏ**: Trung bình Silhouette Score của toàn bộ dữ liệu.
+                - **Nếu giá trị Silhouette Score âm**: có thể một số điểm bị phân cụm sai.
         """)
 
     elif clustering_method == "DBSCAN" and 'labels' in locals():
@@ -526,7 +527,8 @@ with st.expander("🖼️ Đánh giá hiệu suất mô hình phân cụm", expa
             st.pyplot(fig)
 
             # Giải thích chi tiết về biểu đồ Silhouette Score - DBSCAN
-            st.markdown("""
+            st.markdown(
+            """
                 **📌 Giải thích biểu đồ Silhouette Score (DBSCAN)**:    
                 - **Trục tung (Cụm - Cluster ID)**: Mỗi cụm được hiển thị với một dải màu.
                 - **Trục hoành (Silhouette Score)**: Giá trị càng gần **1** thì phân cụm càng tốt, gần **0** là chồng chéo, âm là phân cụm kém.
@@ -540,7 +542,8 @@ with st.expander("🖼️ Đánh giá hiệu suất mô hình phân cụm", expa
                 - Số lượng điểm nhiễu lớn.
                 - Silhouette Score của nhiễu không ổn định, khiến nhiều điểm có giá trị gần nhau.
                 - Cụm có chất lượng kém, tức là thuật toán đang nhận diện rất nhiều điểm là nhiễu thay vì cụm rõ ràng.
-            """)
+            """
+            )
         else:
             st.warning("⚠️ DBSCAN chỉ tìm thấy 1 cụm hoặc tất cả điểm bị coi là nhiễu. Hãy thử điều chỉnh `eps` và `min_samples`.")
             
