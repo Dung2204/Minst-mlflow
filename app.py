@@ -520,7 +520,7 @@ with st.expander("🖼️ Đánh giá hiệu suất mô hình phân cụm", expa
         
 with st.expander("🖼️ Đánh giá hiệu suất mô hình phân cụm", expanded=True):
     st.write(f"MLflow Tracking URI: {mlflow.get_tracking_uri()}")
-    print("🎯 Kiểm tra trên DagsHub: https://dagshub.com/Dung2204/MINST.mlflow/")
+    print("🎯 Kiểm tra trên DagsHub: https://github.com/Dung2204/Minst-mlflow.git")
 
 
 # # # # cd "C:\Users\Dell\OneDrive\Pictures\Documents\Code\python\OpenCV\HMVPYTHON\BaiThucHanh4"
