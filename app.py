@@ -193,32 +193,32 @@ with st.expander("🖼️ Dữ liệu ban đầu", expanded=True):
 with st.expander("🖼️ XỬ LÝ DỮ LIỆU", expanded=True):
     st.subheader("📌***8. Xử lý dữ liệu và chuẩn bị huấn luyện***")
     # Kiểm tra nếu dữ liệu đã được load
-        if 'train_images' in globals() and 'train_labels' in globals() and 'test_images' in globals():
-            # Chuyển đổi dữ liệu thành vector 1 chiều
-            X_train = train_images.reshape(train_images.shape[0], -1)
-            X_test = test_images.reshape(test_images.shape[0], -1)
-            y_test = test_labels
-            # Cho phép người dùng chọn tỷ lệ validation
-            val_size = st.slider("🔹 Chọn tỷ lệ tập validation (%)", min_value=10, max_value=50, value=20, step=5) / 100
+    if 'train_images' in globals() and 'train_labels' in globals() and 'test_images' in globals():
+        # Chuyển đổi dữ liệu thành vector 1 chiều
+        X_train = train_images.reshape(train_images.shape[0], -1)
+        X_test = test_images.reshape(test_images.shape[0], -1)
+        y_test = test_labels
+        # Cho phép người dùng chọn tỷ lệ validation
+        val_size = st.slider("🔹 Chọn tỷ lệ tập validation (%)", min_value=10, max_value=50, value=20, step=5) / 100
 
-            # Chia tập train thành train/validation theo tỷ lệ đã chọn
-            X_train, X_val, y_train, y_val = train_test_split(X_train, train_labels, test_size=val_size, random_state=42)
+        # Chia tập train thành train/validation theo tỷ lệ đã chọn
+        X_train, X_val, y_train, y_val = train_test_split(X_train, train_labels, test_size=val_size, random_state=42)
 
-            st.write("✅ Dữ liệu đã được xử lý và chia tách.")
-            st.write(f"🔹 Kích thước tập huấn luyện: `{X_train.shape}`")
-            st.write(f"🔹 Kích thước tập validation: `{X_val.shape}`")
-            st.write(f"🔹 Kích thước tập kiểm tra: `{X_test.shape}`")
+        st.write("✅ Dữ liệu đã được xử lý và chia tách.")
+        st.write(f"🔹 Kích thước tập huấn luyện: `{X_train.shape}`")
+        st.write(f"🔹 Kích thước tập validation: `{X_val.shape}`")
+        st.write(f"🔹 Kích thước tập kiểm tra: `{X_test.shape}`")
 
             # Biểu đồ phân phối nhãn dữ liệu
-            fig, ax = plt.subplots(figsize=(6, 4))
-            sns.barplot(x=list(Counter(y_train).keys()), y=list(Counter(y_train).values()), palette="Blues", ax=ax)
-            ax.set_title("Phân phối nhãn trong tập huấn luyện")
-            ax.set_xlabel("Nhãn")
-            ax.set_ylabel("Số lượng")
-            st.pyplot(fig)
+        fig, ax = plt.subplots(figsize=(6, 4))
+        sns.barplot(x=list(Counter(y_train).keys()), y=list(Counter(y_train).values()), palette="Blues", ax=ax)
+        ax.set_title("Phân phối nhãn trong tập huấn luyện")
+        ax.set_xlabel("Nhãn")
+        ax.set_ylabel("Số lượng")
+        st.pyplot(fig)
 
-            st.markdown(
-            """
+        st.markdown(
+        """
             ### 📊 Mô tả biểu đồ  
             Biểu đồ cột hiển thị **phân phối nhãn** trong tập huấn luyện.  
             - **Trục hoành (x-axis):** Biểu diễn các nhãn (labels) từ `0` đến `9`.  
@@ -228,10 +228,10 @@ with st.expander("🖼️ XỬ LÝ DỮ LIỆU", expanded=True):
             - Biểu đồ giúp ta quan sát số lượng mẫu của từng nhãn trong tập huấn luyện.  
             - Mỗi thanh (cột) có màu sắc khác nhau: **xanh nhạt đến xanh đậm**, đại diện cho số lượng dữ liệu của từng nhãn.  
             - Một số nhãn có số lượng mẫu nhiều hơn hoặc ít hơn, điều này có thể gây ảnh hưởng đến độ chính xác của mô hình nếu dữ liệu không cân bằng.  
-            """
-            )
-        else:
-            st.error("🚨 Dữ liệu chưa được nạp. Hãy đảm bảo `train_images`, `train_labels` và `test_images` đã được tải trước khi chạy.")
+        """
+        )
+    else:
+        st.error("🚨 Dữ liệu chưa được nạp. Hãy đảm bảo `train_images`, `train_labels` và `test_images` đã được tải trước khi chạy.")
     
 
 with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
