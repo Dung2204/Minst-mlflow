@@ -450,11 +450,53 @@ with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
 with st.expander("🖼️ Đánh giá hiệu suất mô hình phân cụm", expanded=True):
     st.subheader("📌***10. Đánh giá hiệu suất mô hình phân cụm***")
     if clustering_method == "K-means" and 'labels' in locals():
-        with mlflow.start_run():
+        silhouette_avg = silhouette_score(X_train_pca, labels)
+        dbi_score = davies_bouldin_score(X_train_pca, labels)
+
+        st.markdown("### 📊 Đánh giá mô hình K-means")
+        st.write(f"✅ **Silhouette Score**: {silhouette_avg:.4f}")
+        st.write(f"✅ **Davies-Bouldin Index**: {dbi_score:.4f}")
+
+        # Vẽ biểu đồ Silhouette Score
+        fig, ax = plt.subplots(figsize=(6, 4))
+        sample_silhouette_values = silhouette_samples(X_train_pca, labels)
+        y_lower = 10
+
+        for i in range(k):
+            ith_cluster_silhouette_values = sample_silhouette_values[labels == i]
+            ith_cluster_silhouette_values.sort()
+            size_cluster_i = ith_cluster_silhouette_values.shape[0]
+            y_upper = y_lower + size_cluster_i
+
+        ax.fill_betweenx(np.arange(y_lower, y_upper), 0, ith_cluster_silhouette_values, alpha=0.7)
+        ax.text(-0.05, y_lower + 0.5 * size_cluster_i, str(i))
+        y_lower = y_upper + 10
+
+        ax.set_title("Biểu đồ Silhouette Score - K-means")
+        ax.set_xlabel("Silhouette Score")
+        ax.set_ylabel("Cụm")
+        ax.axvline(x=silhouette_avg, color="red", linestyle="--", label="Giá trị trung bình")
+        ax.legend()
+
+        st.pyplot(fig)
+
+            # Giải thích về biểu đồ
+        st.markdown("""
+        **📌 Giải thích biểu đồ Silhouette Score**:
+            - **Trục hoành**: Silhouette Score (từ -1 đến 1).
+            - **Trục tung**: Các cụm được phát hiện.
+            - **Dải màu**: Độ rộng biểu thị số lượng điểm trong từng cụm.
+            - **Đường đứt đỏ**: Trung bình Silhouette Score của toàn bộ dữ liệu.
+            - **Nếu giá trị Silhouette Score âm**: có thể một số điểm bị phân cụm sai.
+        """)
+
+    elif clustering_method == "DBSCAN" and 'labels' in locals():
+        unique_labels = set(labels)
+        if len(unique_labels) > 1:  # Tránh lỗi khi chỉ có 1 cụm hoặc toàn bộ điểm bị coi là nhiễu (-1)
             silhouette_avg = silhouette_score(X_train_pca, labels)
             dbi_score = davies_bouldin_score(X_train_pca, labels)
 
-            st.markdown("### 📊 Đánh giá mô hình K-means")
+            st.markdown("### 📊 Đánh giá mô hình DBSCAN")
             st.write(f"✅ **Silhouette Score**: {silhouette_avg:.4f}")
             st.write(f"✅ **Davies-Bouldin Index**: {dbi_score:.4f}")
 
@@ -463,7 +505,9 @@ with st.expander("🖼️ Đánh giá hiệu suất mô hình phân cụm", expa
             sample_silhouette_values = silhouette_samples(X_train_pca, labels)
             y_lower = 10
 
-            for i in range(k):
+            for i in unique_labels:
+                if i == -1:  # Bỏ qua nhiễu
+                    continue
                 ith_cluster_silhouette_values = sample_silhouette_values[labels == i]
                 ith_cluster_silhouette_values.sort()
                 size_cluster_i = ith_cluster_silhouette_values.shape[0]
@@ -473,7 +517,7 @@ with st.expander("🖼️ Đánh giá hiệu suất mô hình phân cụm", expa
                 ax.text(-0.05, y_lower + 0.5 * size_cluster_i, str(i))
                 y_lower = y_upper + 10
 
-            ax.set_title("Biểu đồ Silhouette Score - K-means")
+            ax.set_title("Biểu đồ Silhouette Score - DBSCAN")
             ax.set_xlabel("Silhouette Score")
             ax.set_ylabel("Cụm")
             ax.axvline(x=silhouette_avg, color="red", linestyle="--", label="Giá trị trung bình")
@@ -481,55 +525,8 @@ with st.expander("🖼️ Đánh giá hiệu suất mô hình phân cụm", expa
 
             st.pyplot(fig)
 
-            # Giải thích về biểu đồ
+            # Giải thích chi tiết về biểu đồ Silhouette Score - DBSCAN
             st.markdown("""
-            **📌 Giải thích biểu đồ Silhouette Score**:
-            - **Trục hoành**: Silhouette Score (từ -1 đến 1).
-            - **Trục tung**: Các cụm được phát hiện.
-            - **Dải màu**: Độ rộng biểu thị số lượng điểm trong từng cụm.
-            - **Đường đứt đỏ**: Trung bình Silhouette Score của toàn bộ dữ liệu.
-            - **Nếu giá trị Silhouette Score âm**: có thể một số điểm bị phân cụm sai.
-            """)
-        mlflow.end_run()
-
-    elif clustering_method == "DBSCAN" and 'labels' in locals():
-        with mlflow.start_run():
-            unique_labels = set(labels)
-            if len(unique_labels) > 1:  # Tránh lỗi khi chỉ có 1 cụm hoặc toàn bộ điểm bị coi là nhiễu (-1)
-                silhouette_avg = silhouette_score(X_train_pca, labels)
-                dbi_score = davies_bouldin_score(X_train_pca, labels)
-
-                st.markdown("### 📊 Đánh giá mô hình DBSCAN")
-                st.write(f"✅ **Silhouette Score**: {silhouette_avg:.4f}")
-                st.write(f"✅ **Davies-Bouldin Index**: {dbi_score:.4f}")
-
-                # Vẽ biểu đồ Silhouette Score
-                fig, ax = plt.subplots(figsize=(6, 4))
-                sample_silhouette_values = silhouette_samples(X_train_pca, labels)
-                y_lower = 10
-
-                for i in unique_labels:
-                    if i == -1:  # Bỏ qua nhiễu
-                        continue
-                    ith_cluster_silhouette_values = sample_silhouette_values[labels == i]
-                    ith_cluster_silhouette_values.sort()
-                    size_cluster_i = ith_cluster_silhouette_values.shape[0]
-                    y_upper = y_lower + size_cluster_i
-
-                    ax.fill_betweenx(np.arange(y_lower, y_upper), 0, ith_cluster_silhouette_values, alpha=0.7)
-                    ax.text(-0.05, y_lower + 0.5 * size_cluster_i, str(i))
-                    y_lower = y_upper + 10
-
-                ax.set_title("Biểu đồ Silhouette Score - DBSCAN")
-                ax.set_xlabel("Silhouette Score")
-                ax.set_ylabel("Cụm")
-                ax.axvline(x=silhouette_avg, color="red", linestyle="--", label="Giá trị trung bình")
-                ax.legend()
-
-                st.pyplot(fig)
-
-                # Giải thích chi tiết về biểu đồ Silhouette Score - DBSCAN
-                st.markdown("""
                 **📌 Giải thích biểu đồ Silhouette Score (DBSCAN)**:    
                 - **Trục tung (Cụm - Cluster ID)**: Mỗi cụm được hiển thị với một dải màu.
                 - **Trục hoành (Silhouette Score)**: Giá trị càng gần **1** thì phân cụm càng tốt, gần **0** là chồng chéo, âm là phân cụm kém.
@@ -543,10 +540,10 @@ with st.expander("🖼️ Đánh giá hiệu suất mô hình phân cụm", expa
                 - Số lượng điểm nhiễu lớn.
                 - Silhouette Score của nhiễu không ổn định, khiến nhiều điểm có giá trị gần nhau.
                 - Cụm có chất lượng kém, tức là thuật toán đang nhận diện rất nhiều điểm là nhiễu thay vì cụm rõ ràng.
-                """)
-            else:
-                st.warning("⚠️ DBSCAN chỉ tìm thấy 1 cụm hoặc tất cả điểm bị coi là nhiễu. Hãy thử điều chỉnh `eps` và `min_samples`.")
-        mlflow.end_run()
+            """)
+        else:
+            st.warning("⚠️ DBSCAN chỉ tìm thấy 1 cụm hoặc tất cả điểm bị coi là nhiễu. Hãy thử điều chỉnh `eps` và `min_samples`.")
+            
 st.write(f"MLflow Tracking URI: {mlflow.get_tracking_uri()}")
 with st.expander("🖼️ Đánh giá hiệu suất mô hình phân cụm", expanded=True):
     # st.write(f"MLflow Tracking URI: {mlflow.get_tracking_uri()}")
