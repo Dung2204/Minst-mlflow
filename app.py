@@ -192,7 +192,6 @@ with st.expander("🖼️ Dữ liệu ban đầu", expanded=True):
 
 with st.expander("🖼️ XỬ LÝ DỮ LIỆU", expanded=True):
     st.subheader("📌***8. Xử lý dữ liệu và chuẩn bị huấn luyện***")
-    with mlflow.start_run():
     # Kiểm tra nếu dữ liệu đã được load
         if 'train_images' in globals() and 'train_labels' in globals() and 'test_images' in globals():
             # Chuyển đổi dữ liệu thành vector 1 chiều
@@ -233,7 +232,7 @@ with st.expander("🖼️ XỬ LÝ DỮ LIỆU", expanded=True):
             )
         else:
             st.error("🚨 Dữ liệu chưa được nạp. Hãy đảm bảo `train_images`, `train_labels` và `test_images` đã được tải trước khi chạy.")
-    mlflow.end_run()
+    
 
 with st.expander("🖼️ Kỹ thuật phân cụm", expanded=True):
     st.subheader("📌***9. Phân cụm dữ liệu***")
